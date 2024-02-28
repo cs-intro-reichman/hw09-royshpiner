@@ -13,30 +13,7 @@ public class LanguageModel {
     // The random number generator used by this model. 
 	private Random randomGenerator;
 
-    public static void main(String[] args) {
-        LanguageModel testing = new LanguageModel(10);
-        List test = new List();
-        test.addFirst('c');
-        test.addFirst('b');
-        test.addFirst('a');
-        test.addFirst('b');
-
-        System.out.println(test);
-        testing.calculateProbabilities(test);
-        System.out.println(test);
-        int [] numlet = new int[3];
-        for (int i = 0; i<100;i++){
-            numlet["abc".indexOf(testing.getRandomChar(test))]++; 
-        }
-        for (int i = 0; i<3;i++){
-            System.out.println(numlet[i]);
-        }
-
-        System.out.println(testing.getRandomChar(test));
-
-
-
-    }
+   
 
 
     /** Constructs a language model with the given window length and a given
@@ -59,6 +36,7 @@ public class LanguageModel {
 
     /** Builds a language model from the text in the given file (the corpus). */
 	public void train(String fileName) {
+        //String gallile = "you_cannot_teach_a_man_anything;_you_can_only_help_him_find_it_within_himself.";
         char a;
         String onewindow = "";
         In in = new In(fileName);
@@ -118,9 +96,23 @@ public class LanguageModel {
 	 * @param numberOfLetters - the size of text to generate
 	 * @return the generated text
 	 */
-	//public String generate(String initialText, int textLength) {
+	public String generate(String initialText, int textLength) {
 		// Your code goes here
-//	}
+        if (initialText.length() < windowLength) 
+        {
+            return initialText;
+        }
+        String result = "" + initialText;
+        for (int i=0; i < textLength ; i++) {
+            String window = result.substring(result.length() - windowLength, result.length());
+            List allr = CharDataMap.get(window);
+            if (allr == null) {
+                return result; 
+            }
+            result += getRandomChar(allr);
+        }
+        return result;
+	}
 
     /** Returns a string representing the map of this language model. */
 	public String toString() {
