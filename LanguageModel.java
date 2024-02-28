@@ -38,24 +38,29 @@ public class LanguageModel {
 	public void train(String fileName) {
         //String gallile = "you_cannot_teach_a_man_anything;_you_can_only_help_him_find_it_within_himself.";
         char a;
-        String onewindow = "";
+        String window = "";
         In in = new In(fileName);
         for (int i = 1; i <= windowLength; i++) { 
             if (!in.hasNextChar()){
                 return;
             }
-            onewindow += in.readChar();
+            window += in.readChar();
         }
         while (!in.isEmpty()) {
             a = in.readChar();
-            List prob = CharDataMap.get(onewindow);
+            List prob = CharDataMap.get(window);
             if (prob == null) {
                 prob = new List ();
-                CharDataMap.put(onewindow, prob);
+                CharDataMap.put(window, prob);
                 }
             prob.update(a);
-            onewindow += a;
-            onewindow = onewindow.substring(1, onewindow.length()); //moving the current window 1 forward
+            window += a;
+            window = window.substring(1, window.length()); //moving the current window 1 forward
+            }
+
+            for (String key : CharDataMap.keySet()) {
+                List prob = CharDataMap.get(key);
+                calculateProbabilities(prob);
             }
 		// Your code goes here
 	}
@@ -103,7 +108,7 @@ public class LanguageModel {
             return initialText;
         }
         String result = "" + initialText;
-        for (int i=0; i < textLength ; i++) {
+        for (int i=1; i <= textLength ; i++) {
             String window = result.substring(result.length() - windowLength, result.length());
             List allr = CharDataMap.get(window);
             if (allr == null) {
